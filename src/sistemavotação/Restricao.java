@@ -15,4 +15,45 @@ public class Restricao {
     private boolean Aluno;
     private boolean Tecnico;
     private boolean Terceirizado;
+
+    public int getFormulario() {
+        return Formulario;
+    }
+
+    public void setFormulario(int Formulario) {
+        this.Formulario = Formulario;
+    }
+
+    public boolean isProfessor() {
+        return Professor;
+    }
+
+    public void setProfessor(boolean Professor) {
+        this.Professor = Professor;
+    }
+
+    public boolean isAluno() {
+        return Aluno;
+    }
+
+    public void setAluno(boolean Aluno) {
+        this.Aluno = Aluno;
+    }
+
+    public boolean isTecnico() {
+        return Tecnico;
+    }
+
+    public void setTecnico(boolean Tecnico) {
+        this.Tecnico = Tecnico;
+    }
+
+    public boolean isTerceirizado() {
+        return Terceirizado;
+    }
+
+    public void setTerceirizado(boolean Terceirizado) {
+        this.Terceirizado = Terceirizado;
+    }
+    
 }
