@@ -63,6 +63,7 @@ public class AlunoDaoImpl implements AlunoDao{
             return resultados;
             
         } catch (SQLException ex) {
+            System.out.println("Errou!");
             Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
