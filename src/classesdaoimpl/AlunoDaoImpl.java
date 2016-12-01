@@ -23,8 +23,8 @@ import uteis.ConnectionDataBase;
  */
 public class AlunoDaoImpl implements AlunoDao{
     private Connection conexao;
-    private Statement sentenca;
-    PreparedStatement st;
+    PreparedStatement st1;
+    PreparedStatement st2;
      
     
     @Override
@@ -39,8 +39,11 @@ public class AlunoDaoImpl implements AlunoDao{
             
         try {
             conexao = ConnectionDataBase.getConnection();
-            sentenca = conexao.createStatement();
-            resposta = sentenca.executeQuery(query);
+            st1 = conexao.prepareStatement(query);
+            
+            
+            
+            resposta = st1.executeQuery();
             
             while (resposta.next()) {
                 Aluno temp = new Aluno();
@@ -49,7 +52,7 @@ public class AlunoDaoImpl implements AlunoDao{
                 temp.setNome(resposta.getString("nome"));
                 temp.setEmail_inst(resposta.getString("email_institucional"));
                 temp.setEmail_sec(resposta.getString("email_secundario"));
-                temp.setData_nasc(resposta.getString("data_nasc"));
+                temp.setData_nasc(resposta.getDate("data_nasc"));
                 temp.setSenha(resposta.getString("senha"));
                 temp.setTipo(resposta.getString("tipo"));
                 
@@ -68,7 +71,7 @@ public class AlunoDaoImpl implements AlunoDao{
             return null;
         } finally {
             try {
-                sentenca.close();
+                st1.close();
                 conexao.close();
             } catch (SQLException ex) {
                 Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,28 +84,51 @@ public class AlunoDaoImpl implements AlunoDao{
     
     @Override
     public int insertAluno (Aluno aluno) {
-        int executeUpdate;
+        int executeUpdate1;
+        int executeUpdate2;
         
-        String query = "insert into aluno (cpf, numero_matricula, curso_sigla) "
+        
+        String query_Pessoa = "insert into pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo)"
+                + " values (?, ?, ?, ?, ?, ?, ?);";
+        
+        String query_Aluno = "insert into aluno (cpf, numero_matricula, curso_sigla) "
                 + " values (?, ?, ?);";
+        
         try{
             conexao = ConnectionDataBase.getConnection();
-            st = conexao.prepareStatement(query);
+            st1 = conexao.prepareStatement(query_Aluno);
+            st2 = conexao.prepareStatement(query_Pessoa);
             
-            st.setString(1, aluno.getCPF());
-            st.setString(2, aluno.getNro_matricula());
-            st.setString(3, aluno.getCurso());
+            st2.setString(1, aluno.getCPF());
+            st2.setString(2, aluno.getNome());
+            st2.setString(3, aluno.getEmail_inst());
+            st2.setString(4, aluno.getEmail_sec());
+            st2.setDate(5, aluno.getData_nasc());
+            st2.setString(6, aluno.getSenha());
+            st2.setString(7, aluno.getTipo());
             
-            executeUpdate = st.executeUpdate();
             
-            return executeUpdate;
+            st1.setString(1, aluno.getCPF());
+            st1.setString(2, aluno.getNro_matricula());
+            st1.setString(3, aluno.getCurso());
+            
+            
+            executeUpdate2 = st2.executeUpdate();
+            executeUpdate1 = st1.executeUpdate();
+            
+                    
+            if(executeUpdate1 == 1 && executeUpdate2 == 1) 
+                return 1;
+            else
+                return 0;
             
         } catch (SQLException ex) {
             Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         } finally {
              try {
-                st.close();
+                st1.close();
+                st2.close();
                 conexao.close();
             } catch (SQLException ex) {
                 Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,25 +139,29 @@ public class AlunoDaoImpl implements AlunoDao{
     }
     
     @Override
-    public Aluno getAluno (Aluno aluno) {
-        ResultSet resposta;
+    public Aluno getAluno (String cpf) {
         String query;
-        String cpf = aluno.getCPF();
-                
-        query = "select * from pessoa p inner join aluno a on p.cpf = a.cpf where a.cpf ='" + cpf + "';";
+        Aluno temp;
+        ResultSet resposta;
+        
+        query = "select * from pessoa p inner join aluno a on p.cpf = a.cpf where a.cpf = ?;";
         
         try {
             conexao = ConnectionDataBase.getConnection();
-            sentenca = conexao.createStatement();
-            resposta = sentenca.executeQuery(query);
+            st1 = conexao.prepareStatement(query);
             
-            Aluno temp = new Aluno();
+            st1.setString(1, cpf);
             
+            resposta = st1.executeQuery();
+            
+            temp = new Aluno();
+            
+            resposta.next();
             temp.setCPF(resposta.getString("cpf"));
             temp.setNome(resposta.getString("nome"));
             temp.setEmail_inst(resposta.getString("email_institucional"));
             temp.setEmail_sec(resposta.getString("email_secundario"));
-            temp.setData_nasc(resposta.getString("data_nasc"));
+            temp.setData_nasc(resposta.getDate("data_nasc"));
             temp.setSenha(resposta.getString("senha"));
             temp.setTipo(resposta.getString("tipo"));
                 
@@ -145,7 +175,7 @@ public class AlunoDaoImpl implements AlunoDao{
             return null;
         }finally {
             try {
-                sentenca.close();
+                st1.close();
                 conexao.close();
             } catch (SQLException ex) {
                 Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,22 +187,31 @@ public class AlunoDaoImpl implements AlunoDao{
     
     @Override
     public void deleteAluno (String cpf) {
-        String query;
-        ResultSet resposta;
-              
-        query = "delete from aluno where cpf = '" + cpf + "';";
+        String query1;
+        String query2;
+        
+        query1 = "delete from pessoa where cpf = ? ;";
+        query2 = "delete from aluno where cpf = ? ;";
         
         try {
             conexao = ConnectionDataBase.getConnection();
-            sentenca = conexao.createStatement();
             
-            resposta = sentenca.executeQuery(query);
+            st1 = conexao.prepareStatement(query2);
+            st1.setString(1, cpf);
+            st1.executeUpdate();
+            
+            st2 = conexao.prepareStatement(query1);
+            st2.setString(1, cpf);
+            st2.executeUpdate();
+            
+            
             
         } catch (SQLException ex) {
             Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                sentenca.close();
+                st1.close();
+                st2.close();
                 conexao.close();
             } catch (SQLException ex) {
                 Logger.getLogger(AlunoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

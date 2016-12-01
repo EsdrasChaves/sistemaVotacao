@@ -5,6 +5,8 @@
  */
 package sistemavotação;
 
+import java.sql.Date;
+
 /**
  *
  * @author esdraschaves
@@ -14,7 +16,7 @@ public class Pessoa {
     private String Nome;
     private String email_inst;
     private String email_sec;
-    private String data_nasc;
+    private Date data_nasc;
     private String senha;
     private String tipo;
     
@@ -51,11 +53,11 @@ public class Pessoa {
         this.email_sec = email_sec;
     }
     
-    public String getData_nasc() {
+    public Date getData_nasc() {
         return data_nasc;
     }
     
-    public void setData_nasc(String data_nasc) {
+    public void setData_nasc(Date data_nasc) {
         this.data_nasc = data_nasc;
     }
     

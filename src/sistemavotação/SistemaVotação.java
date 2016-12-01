@@ -7,6 +7,7 @@ package sistemavotação;
 
 import classesdao.AlunoDao;
 import classesdaoimpl.AlunoDaoImpl;
+import static java.sql.Date.valueOf;
 import java.util.ArrayList;
 import uteis.ConnectionDataBase;
 
@@ -28,15 +29,42 @@ public class SistemaVotação {
         ArrayList<Aluno> alunos = new ArrayList<>();
         
         
-        AlunoDao banco = new AlunoDaoImpl();
-        alunos = banco.getAllAlunos();
+       
         
+        Aluno a = new Aluno();
+        
+        a.setCPF("11111111111");
+        a.setNome("Gordox");
+        a.setEmail_inst("gordox@ufu.br");
+        a.setEmail_sec("gordox@gmail.com");
+        a.setData_nasc(valueOf("1997-12-30"));
+        a.setSenha("gordox1997");
+        a.setTipo("alu");
+        a.setNro_matricula("00000000005");
+        a.setCurso("COMP");
+        
+        
+        
+        AlunoDao banco = new AlunoDaoImpl();
+        
+        
+        //banco.insertAluno(a);
+        
+        //a = banco.getAluno("11111111111");
+        
+        //System.out.println("Nome: " + a.getNome() + "");
+        
+        //banco.deleteAluno("11111111111");
+        
+        //alunos = banco.getAllAlunos();
         
         for (Aluno aluno :alunos) {
             System.out.println("CPF: " + aluno.getCPF() + "  Nome: " + aluno.getNome() + " Email1: " + aluno.getEmail_inst() + " Email2: " 
                     + aluno.getEmail_sec() + " Nascimento: " + aluno.getData_nasc() + " Senha: " + aluno.getSenha() + " Tipo: " 
                     + aluno.getTipo() + " Matricula: " + aluno.getNro_matricula() + " Curso: " + aluno.getCurso() + " FIM");
         }
+        
+        
     }
     
 }

@@ -15,6 +15,6 @@ import sistemavotação.Aluno;
 public interface AlunoDao {
     public ArrayList<Aluno> getAllAlunos();
     public int insertAluno (Aluno aluno);
-    public Aluno getAluno (Aluno aluno);
+    public Aluno getAluno (String cpf);
     public void deleteAluno (String cpf);
 }
