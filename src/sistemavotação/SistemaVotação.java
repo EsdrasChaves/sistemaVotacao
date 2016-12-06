@@ -7,6 +7,8 @@ package sistemavotação;
 
 import classesdao.AlunoDao;
 import classesdaoimpl.AlunoDaoImpl;
+import interfaces.areaAluno;
+import interfaces.loginScreen;
 import static java.sql.Date.valueOf;
 import java.util.ArrayList;
 import uteis.ConnectionDataBase;
@@ -26,7 +28,9 @@ public class SistemaVotação {
         ConnectionDataBase.loadDrive();
         ConnectionDataBase.getConnection();
         
-        ArrayList<Aluno> alunos = new ArrayList<>();
+        /*Formuformularios
+        ResultSet r = */
+        /*ArrayList<Aluno> alunos = new ArrayList<>();
         
         
        
@@ -58,13 +62,15 @@ public class SistemaVotação {
         
         //alunos = banco.getAllAlunos();
         
+        new loginScreen().setVisible(true);
+       
         for (Aluno aluno :alunos) {
             System.out.println("CPF: " + aluno.getCPF() + "  Nome: " + aluno.getNome() + " Email1: " + aluno.getEmail_inst() + " Email2: " 
                     + aluno.getEmail_sec() + " Nascimento: " + aluno.getData_nasc() + " Senha: " + aluno.getSenha() + " Tipo: " 
                     + aluno.getTipo() + " Matricula: " + aluno.getNro_matricula() + " Curso: " + aluno.getCurso() + " FIM");
         }
         
-        
+     */
     }
     
 }
