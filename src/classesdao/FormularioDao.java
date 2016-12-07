@@ -13,6 +13,8 @@ import java.sql.ResultSet;
  */
 public interface FormularioDao {
     
+    public void fechaStatement();
     public ResultSet getFormularioNumQuestao();
+    public ResultSet getQuestoesFormulario(String id);
     
 }
