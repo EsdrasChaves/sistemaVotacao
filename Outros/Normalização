@@ -1,0 +1,64 @@
+pessoa (cpf, nome, email_institucional ,email_secundario ,data_nasc ,senha ,tipo);
+	DF: cpf → nome,email_institucional ,email_secundario ,data_nasc ,senha ,tipo;
+
+professor(cpf, siape, regime_trabalho, uacad_sigla);
+	DF: cpf → siape, regime_trabalho, uacad_sigla;
+
+aluno(cpf, numero_matricula, curso_sigla);
+	DF: cpf → numero_matricula, curso_sigla;
+
+terceirizado(cpf, empresa, setor);
+	DF: cpf → empresa, setor;
+
+tecnicoadm(cpf,siape,uadm_sigla);
+	DF: cpf →  siape,uadm_sigla;
+
+tecnicoacad(cpf,siape,uacad_sigla);
+	DF: cpf →  siape,uacad_sigla;
+
+unidadeacad(sigla,nome,area_conhecimento);
+	DF: sigla → nome, area_conhecimento;
+
+unidadeadm(sigla,nome);
+	DF: sigla → nome;
+
+curso(sigla, nome, uacad_sigla);
+	DF: sigla→ nome, uacad_sigla;
+
+formulario(id,nome.data_inicial,data_final,criador_cpf);
+	DF: id → nome, data_inicial, data_final, criador, cpf;
+
+restricao(formulario_id, professor, aluno, tecnico, terceirizado);
+	DF: formulario_id →  professor, aluno, tecnico, terceirizado;
+
+questaona(id, descricao, formulario_id);
+	DF: id → descricao, formulario_id;
+
+questaovf(id, descricao, formulario_id);
+	DF: id → descricao, formulario_id;
+
+questaotxt(id, descricao, formulario_id);
+	DF: id → descricao, formulario_id;
+
+questaome(id, descricao, formulario_id);
+	DF: id → descricao, formulario_id;
+
+possiveisrespostas(id, opção, questao_id);
+	DF: id →  opção, questao_id;
+
+respondeme(questao_id, possivelres_id, pessoa_cpf);
+	DF: questao_id , possivelres_id, pessoa_cpf→ ;
+
+
+respondesna(questao_id, resposta, pessoa_cpf);
+	DF: questao_id, pessoa_cpf  → resposta;
+
+respondevf(questao_id, resposta, pessoa_cpf);
+	DF: questao_id, pessoa_cpf  → resposta;
+
+respondetxt(questao_id, resposta, pessoa_cpf);
+	DF: questao_id pessoa_cpf → resposta;
+
+Onde DF  é Dependência Funcional.
+
+	Todas as relações estão na forma normal tipo 3, pois todos os atributos de todas as relações são monovalorados e atômicos, não há atributo dependente somente de uma parte de uma chave primária e nenhum atributo que dependa funcionalmente de outro atributo.

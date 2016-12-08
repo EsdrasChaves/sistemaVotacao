@@ -1,0 +1,794 @@
+CREATE SCHEMA sisvotacao;
+SET SEARCH_PATH TO sisvotacao;
+
+CREATE SEQUENCE id_formulario START 1;
+CREATE SEQUENCE id_questao START 1;
+CREATE SEQUENCE id_resposta START 1;
+
+
+CREATE TABLE pessoa (
+	cpf char(11),
+	nome varchar(30) NOT NULL,
+	email_institucional varchar(30) NOT NULL,
+	email_secundario varchar(30),
+	data_nasc date NOT NULL,
+	senha varchar(30) NOT NULL,
+	tipo char(3) NOT NULL
+);
+
+
+CREATE TABLE professor (
+	cpf char(11),
+	siape char(7) UNIQUE NOT NULL,
+	regime_trabalho char(2) NOT NULL,
+	uacad_sigla char(5) NOT NULL
+);
+
+
+CREATE TABLE aluno (
+	cpf char(11),
+	numero_matricula char(11) UNIQUE NOT NULL,
+	curso_sigla char(4) NOT NULL
+);
+
+
+CREATE TABLE terceirizado (
+	cpf char(11),
+	empresa varchar(30) NOT NULL,
+	setor varchar(20)
+);
+
+
+CREATE TABLE tecnicoadm (
+	cpf char(11),
+	siape char(7) UNIQUE NOT NULL,
+	uadm_sigla char(5) NOT NULL
+);
+
+
+CREATE TABLE tecnicoacad (
+	cpf char(11),	
+	siape char(7) UNIQUE NOT NULL,
+	uacad_sigla char(5) NOT NULL
+);
+
+
+CREATE TABLE unidadeacad (
+	sigla char(5),
+	nome varchar(30) NOT NULL,
+	area_conhecimento varchar(10)
+);
+
+
+CREATE TABLE unidadeadm (
+	sigla char(5),
+	nome varchar(30) NOT NULL
+);
+
+
+CREATE TABLE curso (
+	sigla char(4),
+	nome varchar(30) NOT NULL,
+	uacad_sigla char(5) NOT NULL
+);
+
+
+CREATE TABLE formulario (
+	id integer,
+	nome varchar(30) NOT NULL,
+	data_inicial date DEFAULT CURRENT_DATE NOT NULL,
+	data_final date NOT NULL,
+	criador_cpf char(11) NOT NULL 
+);
+
+
+CREATE TABLE restricao (
+	formulario_id integer,
+	professor boolean NOT NULL,
+	aluno boolean NOT NULL,
+	tecnico boolean NOT NULL,
+	terceirizado boolean NOT NULL
+);
+
+
+CREATE TABLE questaosna (
+	id integer,
+	descricao varchar(120) NOT NULL,
+	formulario_id integer NOT NULL
+);
+
+
+
+CREATE TABLE questaovf (
+	id integer,
+	descricao varchar(120) NOT NULL,
+	formulario_id integer NOT NULL
+);
+
+
+
+CREATE TABLE questaotxt (
+	id integer,
+	descricao varchar(120) NOT NULL,
+	formulario_id integer NOT NULL
+);
+
+
+CREATE TABLE questaome (
+	id integer,
+	descricao varchar(120) NOT NULL,
+	formulario_id integer NOT NULL
+);
+
+
+CREATE TABLE possiveisrespostas (
+	id integer,
+	opcao varchar(15) NOT NULL,
+	questao_id integer NOT NULL 				
+);
+
+
+CREATE TABLE respondeme (
+	questao_id integer,
+	possivelres_id integer,
+	pessoa_cpf char(11)
+);
+
+
+CREATE TABLE respondesna (
+	questao_id integer,
+	resposta boolean NOT NULL,
+	pessoa_cpf char(11)
+);
+
+
+CREATE TABLE respondevf (
+	questao_id integer,
+	resposta boolean,
+	pessoa_cpf char(11)
+);
+
+
+CREATE TABLE respondetxt (
+	questao_id integer,
+	resposta varchar(120),
+	pessoa_cpf char(11)
+);
+
+
+ALTER TABLE pessoa
+    ADD CONSTRAINT pkpessoa PRIMARY KEY (cpf);
+
+
+ALTER TABLE professor
+    ADD CONSTRAINT pkprofessor PRIMARY KEY (cpf);
+
+
+ALTER TABLE aluno
+    ADD CONSTRAINT pkaluno PRIMARY KEY (cpf);
+
+
+ALTER TABLE terceirizado
+    ADD CONSTRAINT pkterceirizado PRIMARY KEY (cpf);
+
+
+ALTER TABLE tecnicoadm
+    ADD CONSTRAINT pktecnicoadm PRIMARY KEY (cpf);
+
+
+ALTER TABLE tecnicoacad
+    ADD CONSTRAINT pktecnicoacad PRIMARY KEY (cpf);
+
+
+ALTER TABLE unidadeacad
+    ADD CONSTRAINT pkunidadeacad PRIMARY KEY (sigla);
+
+
+ALTER TABLE unidadeadm
+    ADD CONSTRAINT pkunidadeadm PRIMARY KEY (sigla);
+
+
+ALTER TABLE curso
+    ADD CONSTRAINT pkcurso PRIMARY KEY (sigla);
+
+
+ALTER TABLE formulario
+    ADD CONSTRAINT pkformulario PRIMARY KEY (id);
+
+
+ALTER TABLE questaosna
+    ADD CONSTRAINT pkquestaosna PRIMARY KEY (id);
+
+
+ALTER TABLE questaovf
+    ADD CONSTRAINT pkquestaovf PRIMARY KEY (id);
+
+
+ALTER TABLE questaotxt
+    ADD CONSTRAINT pkquestaotxt PRIMARY KEY (id);
+
+
+ALTER TABLE questaome
+    ADD CONSTRAINT pkquestaome PRIMARY KEY (id);
+
+
+ALTER TABLE possiveisrespostas
+    ADD CONSTRAINT pkpossiveisrespostas PRIMARY KEY (id);
+
+
+ALTER TABLE respondeme
+    ADD CONSTRAINT pkrespondeme PRIMARY KEY (questao_id, possivelres_id, pessoa_cpf);
+
+
+ALTER TABLE respondesna
+    ADD CONSTRAINT pkrespondesna PRIMARY KEY (questao_id, pessoa_cpf);
+
+
+ALTER TABLE respondevf
+    ADD CONSTRAINT pkrespondevf PRIMARY KEY (questao_id, pessoa_cpf);
+
+
+ALTER TABLE respondetxt
+    ADD CONSTRAINT pkrespondetxt PRIMARY KEY (questao_id, pessoa_cpf);
+
+
+
+
+ALTER TABLE professor
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE professor
+    ADD CONSTRAINT fkunidadeacad FOREIGN KEY (uacad_sigla) REFERENCES unidadeacad(sigla);
+
+
+ALTER TABLE aluno
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE aluno
+    ADD CONSTRAINT fkcurso FOREIGN KEY (curso_sigla) REFERENCES curso(sigla);
+
+
+ALTER TABLE terceirizado
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE tecnicoadm
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE tecnicoadm
+    ADD CONSTRAINT fkunidadeadm FOREIGN KEY (uadm_sigla) REFERENCES unidadeadm(sigla);
+
+
+ALTER TABLE tecnicoacad
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE tecnicoacad
+    ADD CONSTRAINT fkunidadeacad FOREIGN KEY (uacad_sigla) REFERENCES unidadeacad(sigla);
+
+
+ALTER TABLE curso
+    ADD CONSTRAINT fkunidadeacad FOREIGN KEY (uacad_sigla) REFERENCES unidadeacad(sigla);
+
+
+ALTER TABLE formulario
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (criador_cpf) REFERENCES pessoa(cpf);
+
+ALTER TABLE restricao
+    ADD CONSTRAINT pkrestricao PRIMARY KEY (formulario_id);
+
+ALTER TABLE restricao
+    ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
+
+
+ALTER TABLE questaosna
+    ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
+
+
+ALTER TABLE questaovf
+    ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
+
+
+ALTER TABLE questaotxt
+    ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
+
+
+ALTER TABLE questaome
+    ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
+
+
+ALTER TABLE possiveisrespostas
+    ADD CONSTRAINT fkquestao FOREIGN KEY (questao_id) REFERENCES questaome(id);				--Alterado
+
+
+ALTER TABLE respondeme
+    ADD CONSTRAINT fkquestao FOREIGN KEY (questao_id) REFERENCES questaome(id);
+
+
+ALTER TABLE respondeme
+    ADD CONSTRAINT fkpossiveisrespostas FOREIGN KEY (possivelres_id) REFERENCES possiveisrespostas(id);
+
+
+ALTER TABLE respondeme
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (pessoa_cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE respondesna
+    ADD CONSTRAINT fkquestao FOREIGN KEY (questao_id) REFERENCES questaosna(id);
+
+
+ALTER TABLE respondesna
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (pessoa_cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE respondevf
+    ADD CONSTRAINT fkquestao FOREIGN KEY (questao_id) REFERENCES questaovf(id);
+
+
+ALTER TABLE respondevf
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (pessoa_cpf) REFERENCES pessoa(cpf);
+
+
+ALTER TABLE respondetxt
+    ADD CONSTRAINT fkquestao FOREIGN KEY (questao_id) REFERENCES questaotxt(id);
+
+
+ALTER TABLE respondetxt
+    ADD CONSTRAINT fkpessoa FOREIGN KEY (pessoa_cpf) REFERENCES pessoa(cpf);
+
+
+CREATE OR REPLACE FUNCTION siglas_maiusculas()
+RETURNS trigger AS
+$$
+BEGIN
+	NEW.sigla = UPPER(NEW.sigla);
+	RETURN NEW;
+END;$$language plpgsql;
+
+CREATE TRIGGER siglas_maiusculas_tac
+BEFORE INSERT OR UPDATE
+ON unidadeacad FOR EACH ROW
+EXECUTE PROCEDURE siglas_maiusculas();
+
+CREATE TRIGGER siglas_maiusculas_tad
+BEFORE INSERT OR UPDATE
+ON unidadeadm FOR EACH ROW
+EXECUTE PROCEDURE siglas_maiusculas();
+
+
+CREATE OR REPLACE FUNCTION restringe_tipos()
+  RETURNS trigger AS
+$$
+BEGIN
+	IF(new.tipo<>'pro'AND new.tipo<>'alu'AND
+	   new.tipo<>'tac'AND new.tipo<>'tad'AND
+	   new.tipo<>'ter')THEN
+	RAISE EXCEPTION 'tipo de pessoa invalido';
+	RETURN NULL;
+	END IF;
+	RETURN NEW;
+	
+END;$$
+  LANGUAGE plpgsql;
+
+CREATE TRIGGER restringe_tipos
+BEFORE INSERT OR UPDATE
+ON pessoa FOR EACH ROW
+EXECUTE PROCEDURE restringe_tipos();
+
+CREATE OR REPLACE FUNCTION restringe_regime_trabalho()
+  RETURNS trigger AS
+$$
+BEGIN
+	IF(new.regime_trabalho<>'de'AND new.regime_trabalho<>'40'AND
+	   new.regime_trabalho<>'20')THEN
+	RAISE EXCEPTION 'Regime de trabalho invalido';
+	RETURN NULL;
+	END IF;
+	RETURN NEW;
+	
+END;$$
+  LANGUAGE plpgsql;
+CREATE TRIGGER restringe_regime
+BEFORE INSERT OR UPDATE
+ON professor FOR EACH ROW
+EXECUTE PROCEDURE restringe_regime_trabalho();
+
+CREATE OR REPLACE FUNCTION restringe_area_conhecimento()
+  RETURNS trigger AS
+$$
+BEGIN
+	IF(new.area_conhecimento<>'exatas'AND
+	   new.area_conhecimento<>'humanas'AND
+	   new.area_conhecimento<>'biologicas')THEN
+	RAISE EXCEPTION 'Área do conhecimento invalida';
+	RETURN NULL;
+	END IF;
+	RETURN NEW;
+	
+END;$$  LANGUAGE plpgsql;
+CREATE TRIGGER restringe_area
+BEFORE INSERT OR UPDATE
+ON unidadeacad FOR EACH ROW
+EXECUTE PROCEDURE restringe_area_conhecimento();
+
+CREATE OR REPLACE FUNCTION restringe_data()
+  RETURNS trigger AS
+$$
+BEGIN
+	IF(NEW.data_final < CURRENT_DATE)THEN
+	RAISE EXCEPTION 'Data final invalida, deve ser após a data de hoje';
+	RETURN NULL;
+	END IF;
+	RETURN NEW;
+	
+END;$$LANGUAGE plpgsql;
+CREATE TRIGGER restringe_data
+BEFORE INSERT OR UPDATE
+ON formulario FOR EACH ROW
+EXECUTE PROCEDURE restringe_data();
+
+CREATE OR REPLACE FUNCTION restringe_siape()
+  RETURNS trigger AS
+$$
+BEGIN
+	IF(NEW.siape NOT IN (SELECT siape FROM professor) AND
+	   NEW.siape NOT IN (SELECT siape FROM tecnicoadm)AND
+	   NEW.siape NOT IN (SELECT siape FROM tecnicoacad) OR NEW.siape = OLD.siape)THEN
+	RETURN NEW;
+	END IF;
+	RAISE EXCEPTION 'Siape ja registrado';
+	RETURN NULL;
+
+	
+END;$$ LANGUAGE plpgsql;
+CREATE TRIGGER restringe_siape
+BEFORE INSERT OR UPDATE
+ON professor FOR EACH ROW
+EXECUTE PROCEDURE restringe_siape();
+
+CREATE TRIGGER restringe_siape
+BEFORE INSERT OR UPDATE
+ON tecnicoadm FOR EACH ROW
+EXECUTE PROCEDURE restringe_siape();
+
+CREATE TRIGGER restringe_siape
+BEFORE INSERT OR UPDATE
+ON tecnicoacad FOR EACH ROW
+EXECUTE PROCEDURE restringe_siape();
+
+
+
+CREATE VIEW questoes AS (
+	SELECT * FROM questaome UNION SELECT * FROM questaovf UNION SELECT * FROM questaosna UNION SELECT * FROM questaotxt
+);
+
+CREATE VIEW respostas AS (
+	SELECT questao_id, pessoa_cpf FROM respondeme UNION SELECT questao_id, pessoa_cpf FROM respondevf UNION SELECT questao_id, pessoa_cpf FROM respondesna UNION SELECT questao_id, pessoa_cpf FROM respondetxt
+);
+
+
+-- Inserçao dos unidadeACAD
+
+INSERT INTO unidadeacad (sigla, nome, area_conhecimento) VALUES ('FACOM', 'Faculdade de Computação', 'exatas');
+
+INSERT INTO unidadeacad (sigla, nome, area_conhecimento) VALUES ('FAMED', 'Faculdade de Medicina', 'biologicas');
+
+INSERT INTO unidadeacad (sigla, nome, area_conhecimento) VALUES ('FAGEN', 'Faculdade de Gestao e Negocio', 'humanas');
+
+INSERT INTO unidadeacad (sigla, nome, area_conhecimento) VALUES ('FAMEV', 'Faculdade de Veterinaria', 'biologicas');
+
+INSERT INTO unidadeacad (sigla, nome, area_conhecimento) VALUES ('FAMAT', 'Faculdade de Matemática', 'exatas');
+
+
+
+
+-- Inserçao dos unidadeADM
+
+
+INSERT INTO unidadeadm (sigla, nome) VALUES ('REI1', 'Reitoria 1');
+
+INSERT INTO unidadeadm (sigla, nome) VALUES ('REI2', 'Reitoria 2');
+
+INSERT INTO unidadeadm (sigla, nome) VALUES ('REI3', 'Reitoria 3');
+
+INSERT INTO unidadeadm (sigla, nome) VALUES ('SREI', 'Sub-Reitoria');
+
+INSERT INTO unidadeadm (sigla, nome) VALUES ('FEXP', 'Fazenda Experimental');
+
+
+
+
+-- Inserção dos cursos
+
+
+INSERT INTO curso (sigla, nome, uacad_sigla) VALUES ('COMP', 'Ciência da Computação', 'FACOM');
+
+INSERT INTO curso (sigla, nome, uacad_sigla) VALUES ('MEDC', 'Medicina', 'FAMED');
+
+INSERT INTO curso (sigla, nome, uacad_sigla) VALUES ('EMPI', 'Empreendedorismo Internacional', 'FAGEN');
+
+INSERT INTO curso (sigla, nome, uacad_sigla) VALUES ('MVET', 'Medicina Veterinária', 'FAMEV');
+
+INSERT INTO curso (sigla, nome, uacad_sigla) VALUES ('BMAT', 'Bacharelado Matemática', 'FAMAT');
+
+
+
+
+-- Inserção dos professores --
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('17755027244', 'Theo Luiz Gomes', 'theo_l_gomes@ufu.br', 'theo_l_gomes@hotmail.com.br', '1994-12-25', 'theo1994', 'pro');
+INSERT INTO professor (cpf, siape, regime_trabalho, uacad_sigla) VALUES ('17755027244', 'AAA0000', 'de', 'FACOM');
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('22765341095', 'Ricardo Fernando', 'ricardofernando@ufu.br', 'ricardofernando@hotmail.com.br', '1990-08-08', 'ricfer1990', 'pro');
+INSERT INTO professor (cpf, siape, regime_trabalho, uacad_sigla) VALUES ('22765341095', 'AAA0001', 'de', 'FAMED');
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('93908704375', 'Pedro Ian de Paula', 'pedro-ian70@ufu.com', 'pedro-ian70@hotmail.com.br', '1993-10-12', 'pian1993', 'pro');
+INSERT INTO professor (cpf, siape, regime_trabalho, uacad_sigla) VALUES ('93908704375', 'AAA0002', '40', 'FAMAT');
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('79447547710', 'Brenda Flávia Rodrigues', 'bfrodrigues@ufu.br', 'bfrodrigues@hotmail.com.br', '1968-11-04', 'brerod1968', 'pro');
+INSERT INTO professor (cpf, siape, regime_trabalho, uacad_sigla) VALUES ('79447547710', 'AAA0003', '20', 'FAGEN');
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('75798127621', 'Yasmin Rafaela Souza', 'yasmin_rafaela@ufu.br', 'yasmin_rafaela@hotmail.com.br', '1989-08-09', 'yrafa1989', 'pro');
+INSERT INTO professor (cpf, siape, regime_trabalho, uacad_sigla) VALUES ('75798127621', 'AAA0004', '40', 'FAMEV');
+
+
+
+-- Inserção dos Alunos --
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('31713966530', 'Carlos Eduardo', 'carlos_eduardo@ufu.br', 'carlos_eduardo@hotmail.com.br', '1997-01-16', 'carlos1997', 'alu');
+INSERT INTO aluno (cpf, numero_matricula, curso_sigla) VALUES ('31713966530', '00000000000', 'COMP');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('58095226610', 'Sara Beatriz Cardoso', 'sara-beatriz91@ufu.br', 'sara-beatriz91@hotmail.com.br', '1996-01-04', 'sarab1996', 'alu');
+INSERT INTO aluno (cpf, numero_matricula, curso_sigla) VALUES ('58095226610', '00000000001', 'MEDC');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('60958606102', 'Davi Levi Alves', 'davi.levi.alves@ufu.br', 'davi.levi.alves@hotmail.com.br', '1998-12-05', 'davi1998', 'alu');
+INSERT INTO aluno (cpf, numero_matricula, curso_sigla) VALUES ('60958606102', '00000000002', 'BMAT');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('44480816305', 'Lucas Lorenzo', 'llorenzo@ufu.br', 'llorenzo@hotmail.com.br', '1998-05-05', 'lorenzo1998', 'alu');
+INSERT INTO aluno (cpf, numero_matricula, curso_sigla) VALUES ('44480816305', '00000000003', 'EMPI');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('78522903026', 'Letícia Amanda Mendes', 'lamendes@ufu.br', 'lamendes@hotmail.com.br', '1998-04-23', 'lamendes195', 'alu');
+INSERT INTO aluno (cpf, numero_matricula, curso_sigla) VALUES ('78522903026', '00000000004', 'MVET');
+
+
+-- Inserção dos Terceirizados --
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('45613847584', 'Juan Otávio Cavalcanti', 'juan.otavio@ufu.br', 'juan.otavio@hotmail.com.br', '1985-05-17', 'juan1985', 'ter');
+INSERT INTO terceirizado (cpf, empresa, setor) VALUES ('45613847584', 'Eficaz Limpeza', 'Limpeza');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('05955155686', 'Larissa Natália', 'larissa_n@ufu.br', 'larissa_n@hotmail.com.br', '1986-12-23', 'larinat1986', 'ter');
+INSERT INTO terceirizado (cpf, empresa, setor) VALUES ('05955155686', 'Arqgraph Serviços Ltda.', 'Jardinagem');
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('13260497129', 'João Ryan Raul', 'joao_rr@ufu.br', 'joao_rr@hotmail.com.br', '1988-07-13', 'rrjoao1988', 'ter');
+INSERT INTO terceirizado (cpf, empresa, setor) VALUES ('13260497129', 'Esquadra Vigilância', 'Vilancia Armada');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('73510461665', 'Mirella Emily Castro', 'emilyc@ufu.br', 'emilyc@hotmail.com.br', '1987-07-23', 'lylyc1987', 'ter');
+INSERT INTO terceirizado (cpf, empresa, setor) VALUES ('73510461665', 'Mess Soluções Ltda.', 'Diagramação');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('53273696338', 'Tomás Matheus Levi', 'tmlevi@ufu.br', 'tmlevi@hotmail.com.br', '1985-04-09', 'tomas1985', 'ter');
+INSERT INTO terceirizado (cpf, empresa, setor) VALUES ('53273696338', 'RCA Produtos e Serviços Ltda.', 'Recepção');
+
+
+-- Inserçao dos tecnicosADM
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('68116210521', 'Otávio Isaac Dias', 'otavio_i_dias@ufu.br', 'otavio_i_dias@hotmail.com.br', '1990-02-11', 'otavio1990', 'tad');
+INSERT INTO tecnicoadm (cpf, siape, uadm_sigla) VALUES ('68116210521', 'BBB0000', 'REI1');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('94095933950', 'Renato Giovanni Barros', 'renato@ufu.br', 'renato@hotmail.com.br', '1986-01-18', 'renato1986', 'tad');
+INSERT INTO tecnicoadm (cpf, siape, uadm_sigla) VALUES ('94095933950', 'BBB0001', 'FEXP');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('57334808827', 'Nicole Antonella', 'nicole_ant@ufu.br', 'nicole_ant@hotmail.com.br', '1985-05-18', 'niantonella1985', 'tad');
+INSERT INTO tecnicoadm (cpf, siape, uadm_sigla) VALUES ('57334808827', 'BBB0002', 'SREI');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('37948062475', 'Raquel Nina da Silva', 'rnsilva@ufu.br', 'rnsilva@hotmail.com.br', '1980-09-14', 'rnsilva1980', 'tad');
+INSERT INTO tecnicoadm (cpf, siape, uadm_sigla) VALUES ('37948062475', 'BBB0003', 'REI2');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('01984577409', 'Tomás Renato', 'tomas_r@ufu.br', 'tomas_r@hotmail.com.br', '1983-02-06', 'tomas_r1980', 'tad');
+INSERT INTO tecnicoadm (cpf, siape, uadm_sigla) VALUES ('01984577409', 'BBB0004', 'REI3');
+
+
+
+-- Inserçao dos tecnicosACAD
+
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('35786868834', 'Yuri Paulo Moura', 'yuri-paulo@ufu.br', 'yuri-paulo@hotmail.com.br', '1993-07-11', 'yurip1993', 'tac');
+INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('35786868834', 'CCC0000', 'FACOM');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('75826671408', 'Danilo Rodrigo Isaac', 'drisaac@ufu.br', 'drisaac@hotmail.com.br', '1994-11-24', 'disaac1994', 'tac');
+INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('75826671408', 'CCC0001', 'FAMED');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('74391431327', 'Kevin Marcelo', 'kevin_paula@ufu.br', 'kevin_paula@hotmail.com.br', '1995-07-27', 'kevin1995', 'tac');
+INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('74391431327', 'CCC0002', 'FAGEN');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('48497703987', 'Isadora Letícia Araújo', 'isah@ufu.br', 'isah@hotmail.com.br', '1979-02-15', 'isahlet1980', 'tac');
+INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('48497703987', 'CCC0003', 'FAMEV');
+
+INSERT INTO pessoa (cpf, nome, email_institucional, email_secundario, data_nasc, senha, tipo) VALUES ('42841177181', 'Isadora Stefany', 'isadora_s@ufu.br', 'isadora_s@hotmail.com.br', '1994-01-10', 'isadora1994', 'tac');
+INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('42841177181', 'CCC0004', 'FAMAT');
+
+
+
+
+-- Inserção de Formulário --
+
+
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Esportes', CURRENT_DATE, '2016-11-29', '17755027244');
+
+
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Reitoria', CURRENT_DATE, '2016-12-30', '31713966530');
+
+
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Limpeza', '2016-12-30', '2017-01-27', '42841177181');
+
+
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Festas', CURRENT_DATE, '2017-02-15', '01984577409');
+
+
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Segurança', '2017-02-15', '2017-02-16', '73510461665');
+
+
+
+-- Inserção de Restrição --
+
+
+INSERT INTO restricao (formulario_id, professor, aluno, tecnico, terceirizado) VALUES (1, TRUE, TRUE, TRUE, TRUE);
+
+INSERT INTO restricao (formulario_id, professor, aluno, tecnico, terceirizado) VALUES (2, TRUE, FALSE, TRUE, FALSE);
+
+INSERT INTO restricao (formulario_id, professor, aluno, tecnico, terceirizado) VALUES (3, TRUE, TRUE, TRUE, TRUE);
+
+INSERT INTO restricao (formulario_id, professor, aluno, tecnico, terceirizado) VALUES (4, FALSE, TRUE, FALSE, FALSE);
+
+INSERT INTO restricao (formulario_id, professor, aluno, tecnico, terceirizado) VALUES (5, TRUE, TRUE, TRUE, TRUE);
+
+
+
+-- Inserção Formulario 1
+
+INSERT INTO questaosna (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Você pratica Esportes Regularmente?', 1);
+
+INSERT INTO questaovf (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'A Faculdade proporciona um bom ambiente para a prática de esporte. Avalie a afirmação', 1);
+
+INSERT INTO questaotxt (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Descreva sucintamente como você acha qua a faculdade deveria melhorar no quisito: Incentivo ao esporte', 1);
+
+INSERT INTO questaome (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Quais dos esportes a seguir você pratica?', 1);
+
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Futebol', 4);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Volei', 4);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Handball', 4);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Nataçao', 4);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Peteca', 4);
+
+
+
+
+-- Inserção Formulario 2
+
+INSERT INTO questaosna (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Você votou na última eleição para reitor?', 2);
+
+INSERT INTO questaovf (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'O estudante tem papel vital na escolha do reitor. Avalie a afirmação', 2);
+
+INSERT INTO questaotxt (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Descreva sucintamente como você acha que a participação do estudante nas eleiçoes deve melhorar', 2);
+
+INSERT INTO questaome (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Quais os pontos mais importantes a se levar em conta na escolha do reitor?', 2);
+
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Pesquisa', 8);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Politica', 8);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Vontade', 8);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Dedicação', 8);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Fama', 8);
+
+
+-- Inserção Formulário 3 --
+
+INSERT INTO questaosna (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Você acha a UFU limpa?', 3);
+
+INSERT INTO questaovf (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'As pessoas que utilizam a UFU devem mante-la limmpa. Avalie a afirmação', 3);
+
+INSERT INTO questaotxt (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Descreva sucintamente como você acha que a limpeza deve melhorar', 3);
+
+INSERT INTO questaome (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Quais locais você acha quee falta limpeza?', 3);
+
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Banheiro', 12);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Salas', 12);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Labotatório', 12);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Pátios', 12);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Calçadas', 12);
+
+
+-- Inserção Formulario 4
+
+INSERT INTO questaosna (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Você já foi em alguma festa na UFU?', 4);
+
+INSERT INTO questaovf (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Festas são uma maneira de desestressar os estudantes. Avalie a afirmação', 4);
+
+INSERT INTO questaotxt (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Descreva sucintamente os aspectos negativos das festas', 4);
+
+INSERT INTO questaome (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Quais são os horários que você julga que as festas devem acabar?', 4);
+
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), '00:00', 16);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), '22:00', 16);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), '23:00', 16);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), '04:00', 16);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Sem hora', 16);
+
+
+-- Inserção Formulario 5
+
+INSERT INTO questaosna (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Você já foi ou conheçe alguem que ja foi assaltado na UFU?', 5);
+
+INSERT INTO questaovf (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'A segurança na UFU anda precária. Avalie a afirmação', 5);
+
+INSERT INTO questaotxt (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Descreva sucintamente o que você pensa sobre a falta de guardas armados.', 5);
+
+INSERT INTO questaome (id, descricao, formulario_id) VALUES (nextval('id_questao'), 'Quais são os aspectos que você julga necessário para uma UFU segura?', 5);
+
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Câmeras', 20);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Vigilantes', 20);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'PM no campus', 20);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Catraca', 20);
+INSERT INTO possiveisrespostas (id, opcao, questao_id) VALUES (nextval('id_resposta'), 'Guarita', 20);
+
+
+
+
+-- Inserção Respostas Formulario 1 --
+
+INSERT INTO respondesna (questao_id, resposta, pessoa_cpf) VALUES (1, TRUE, '42841177181');
+INSERT INTO respondevf (questao_id, resposta, pessoa_cpf) VALUES (2, FALSE, '42841177181');
+INSERT INTO respondetxt (questao_id, resposta, pessoa_cpf) VALUES (3, 'Acredito que a UFU deve promover mais campeonatos', '42841177181');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (4, 1, '42841177181');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (4, 3, '42841177181');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (4, 4, '42841177181');
+
+
+-- Inserção Respostas Formulario 2 
+
+INSERT INTO respondesna (questao_id, resposta, pessoa_cpf) VALUES (5, FALSE, '22765341095');
+INSERT INTO respondevf (questao_id, resposta, pessoa_cpf) VALUES (6, TRUE, '22765341095');
+INSERT INTO respondetxt (questao_id, resposta, pessoa_cpf) VALUES (7, 'Acredito que a UFU deve promover mais discussões abertas', '22765341095');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (8, 7, '22765341095');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (8, 9, '22765341095');
+
+-- Inserção Respostas Formulário 3 --
+
+INSERT INTO respondesna (questao_id, resposta, pessoa_cpf) VALUES (9, TRUE, '44480816305');
+INSERT INTO respondevf (questao_id, resposta, pessoa_cpf) VALUES (10, TRUE, '44480816305');
+INSERT INTO respondetxt (questao_id, resposta, pessoa_cpf) VALUES (11, 'Acho que isso vem de casa, não há o que fazer', '44480816305');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (12, 10, '44480816305');
+
+
+-- Inserção Respostas Formulario 4 --
+
+INSERT INTO respondesna (questao_id, resposta, pessoa_cpf) VALUES (13, TRUE, '60958606102');
+INSERT INTO respondevf (questao_id, resposta, pessoa_cpf) VALUES (14, TRUE, '60958606102');
+INSERT INTO respondetxt (questao_id, resposta, pessoa_cpf) VALUES (15, 'Não vejo nenhum, festa é muito baum', '60958606102');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (16, 16, '60958606102');
+
+
+-- Inserção Respostas Formulario 5 --
+
+INSERT INTO respondesna (questao_id, resposta, pessoa_cpf) VALUES (17, TRUE, '48497703987');
+INSERT INTO respondevf (questao_id, resposta, pessoa_cpf) VALUES (18, TRUE, '48497703987');
+INSERT INTO respondetxt (questao_id, resposta, pessoa_cpf) VALUES (19, 'Acredito que os bandidos estejam na vantagem', '48497703987');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (20, 21, '48497703987');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (20, 22, '48497703987');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (20, 23, '48497703987');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (20, 24, '48497703987');
+INSERT INTO respondeme (questao_id, possivelres_id, pessoa_cpf) VALUES (20, 25, '48497703987');
+
+
+
+
+
+
