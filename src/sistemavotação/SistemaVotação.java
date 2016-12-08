@@ -5,18 +5,7 @@
  */
 package sistemavotação;
 
-import classesdao.AlunoDao;
-import classesdao.FormularioDao;
-import classesdaoimpl.AlunoDaoImpl;
-import classesdaoimpl.FormularioDaoImpl;
-import interfaces.areaAluno;
 import interfaces.loginScreen;
-import static java.sql.Date.valueOf;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uteis.ConnectionDataBase;
 
 /**
@@ -34,61 +23,7 @@ public class SistemaVotação {
         ConnectionDataBase.loadDrive();
         ConnectionDataBase.getConnection();
         
-        FormularioDao f = new FormularioDaoImpl();
-        ResultSet r = f.getFormularioNumQuestao();
-        
-        
-        
-        try {
-            while(r.next()) {
-                System.out.println("ID: " + r.getString("id") + "");
-        }
-        
-        f.fechaStatement();
-        
-            /*ArrayList<Aluno> alunos = new ArrayList<>();
-            
-            
-            
-            
-            Aluno a = new Aluno();
-            
-            a.setCPF("11111111111");
-            a.setNome("Gordox");
-            a.setEmail_inst("gordox@ufu.br");
-            a.setEmail_sec("gordox@gmail.com");
-            a.setData_nasc(valueOf("1997-12-30"));
-            a.setSenha("gordox1997");
-            a.setTipo("alu");
-            a.setNro_matricula("00000000005");
-            a.setCurso("COMP");
-            
-            
-            
-            AlunoDao banco = new AlunoDaoImpl();
-            
-            
-            //banco.insertAluno(a);
-            
-            //a = banco.getAluno("11111111111");
-            
-            //System.out.println("Nome: " + a.getNome() + "");
-            
-            //banco.deleteAluno("11111111111");
-            
-            //alunos = banco.getAllAlunos();
-            
-            new loginScreen().setVisible(true);
-            
-            for (Aluno aluno :alunos) {
-            System.out.println("CPF: " + aluno.getCPF() + "  Nome: " + aluno.getNome() + " Email1: " + aluno.getEmail_inst() + " Email2: "
-            + aluno.getEmail_sec() + " Nascimento: " + aluno.getData_nasc() + " Senha: " + aluno.getSenha() + " Tipo: "
-            + aluno.getTipo() + " Matricula: " + aluno.getNro_matricula() + " Curso: " + aluno.getCurso() + " FIM");
-            }
-            
-        */ } catch (SQLException ex) {
-            Logger.getLogger(SistemaVotação.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        new loginScreen().setVisible(true);
     }
     
 }

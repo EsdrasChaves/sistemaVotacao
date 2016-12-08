@@ -5,7 +5,22 @@
  */
 package interfaces;
 
+import classesdao.AlunoDao;
+import classesdao.FormularioDao;
+import classesdao.UnidadeAcadDao;
+import classesdaoimpl.AlunoDaoImpl;
+import classesdaoimpl.FormularioDaoImpl;
+import classesdaoimpl.UnidadeAcadDaoImpl;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractButton;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import sistemavotação.Aluno;
+import sistemavotação.UnidadeAcad;
 
 /**
  *
@@ -14,18 +29,28 @@ import sistemavotação.Aluno;
 public class areaAluno extends javax.swing.JFrame {
     
     private Aluno aluno = null;
+    ResultSet resultado;
+    FormularioDao f;
+    AlunoDao a;
+    UnidadeAcadDao uAcad;
     /**
      * Creates new form areaAluno
      */
     public areaAluno() {
         initComponents();
+        
+        f = new FormularioDaoImpl();
+        uAcad = new UnidadeAcadDaoImpl();
+        pannel_resposta.setVisible(false);
     }
     
     public areaAluno(Aluno a) {
         this.aluno = a;
         initComponents();
-        
+        f = new FormularioDaoImpl();
+        uAcad = new UnidadeAcadDaoImpl();
         this.setDisplayAluno(a);
+        pannel_resposta.setVisible(false);
     }
 
     /**
@@ -37,7 +62,8 @@ public class areaAluno extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        button_group = new javax.swing.ButtonGroup();
+        button_group1 = new javax.swing.ButtonGroup();
         text_bemVindo1 = new javax.swing.JLabel();
         text_setNome = new javax.swing.JLabel();
         text_email = new javax.swing.JLabel();
@@ -52,18 +78,34 @@ public class areaAluno extends javax.swing.JFrame {
         tabbed_areaAluno = new javax.swing.JTabbedPane();
         aba_Visualizar = new javax.swing.JPanel();
         text_opcao = new javax.swing.JLabel();
+        button_escolha1 = new javax.swing.JRadioButton();
+        button_escolha2 = new javax.swing.JRadioButton();
+        button_escolha3 = new javax.swing.JRadioButton();
+        button_escolha4 = new javax.swing.JRadioButton();
+        button_pesquisar = new javax.swing.JButton();
+        input_numFormulario1 = new javax.swing.JTextField();
+        input_numFormulario2 = new javax.swing.JTextField();
+        aba_Atualizar = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        input_form = new javax.swing.JTextField();
+        check_aluno = new javax.swing.JCheckBox();
+        check_prof = new javax.swing.JCheckBox();
+        check_tec = new javax.swing.JCheckBox();
+        check_terc = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        button_pesquisar2 = new javax.swing.JButton();
+        aba_Excluir = new javax.swing.JPanel();
+        text_opcao1 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jRadioButton7 = new javax.swing.JRadioButton();
-        jRadioButton8 = new javax.swing.JRadioButton();
-        jRadioButton9 = new javax.swing.JRadioButton();
-        jRadioButton10 = new javax.swing.JRadioButton();
-        aba_Atualizar = new javax.swing.JPanel();
-        aba_Excluir = new javax.swing.JPanel();
+        input_unidadeAcad = new javax.swing.JTextField();
+        input_respID = new javax.swing.JTextField();
+        button_pesquisar1 = new javax.swing.JButton();
+        pannel_resposta = new javax.swing.JPanel();
+        button_pronto = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tArea_resposta = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -116,11 +158,12 @@ public class areaAluno extends javax.swing.JFrame {
         text_setCurso.setForeground(new java.awt.Color(254, 247, 247));
         getContentPane().add(text_setCurso);
         text_setCurso.setBounds(10, 330, 160, 30);
+
+        jSeparator2.setBackground(new java.awt.Color(142, 142, 142));
         getContentPane().add(jSeparator2);
         jSeparator2.setBounds(20, 126, 190, 10);
 
-        jSeparator1.setBackground(new java.awt.Color(143, 141, 141));
-        jSeparator1.setForeground(new java.awt.Color(87, 82, 82));
+        jSeparator1.setBackground(new java.awt.Color(142, 142, 142));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         getContentPane().add(jSeparator1);
         jSeparator1.setBounds(230, 30, 10, 610);
@@ -138,112 +181,299 @@ public class areaAluno extends javax.swing.JFrame {
 
         text_opcao.setText("Escolha uma opção abaixo para visualizar ");
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("Listar Formulários e Número de questões");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        button_group.add(button_escolha1);
+        button_escolha1.setText("Listar Formulários e Número de questões");
+        button_escolha1.setName("botao1"); // NOI18N
+        button_escolha1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                button_escolha1ActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("jRadioButton2");
+        button_group.add(button_escolha2);
+        button_escolha2.setText("Listar Questões de formulário específico");
+        button_escolha2.setName("botao2"); // NOI18N
 
-        jRadioButton3.setText("jRadioButton3");
+        button_group.add(button_escolha3);
+        button_escolha3.setText("Porcentagem de resposta na questão multipla escolha");
+        button_escolha3.setName("botao3"); // NOI18N
+        button_escolha3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_escolha3ActionPerformed(evt);
+            }
+        });
 
-        jRadioButton4.setText("jRadioButton4");
+        button_group.add(button_escolha4);
+        button_escolha4.setText("Número de Questões que Eu já respondi");
+        button_escolha4.setName("botao4"); // NOI18N
 
-        jRadioButton5.setText("jRadioButton5");
+        button_pesquisar.setFont(new java.awt.Font("Waree", 1, 18)); // NOI18N
+        button_pesquisar.setText("Pesquisar");
+        button_pesquisar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_pesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_pesquisarActionPerformed(evt);
+            }
+        });
 
-        jRadioButton6.setText("jRadioButton6");
+        input_numFormulario1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_numFormulario1ActionPerformed(evt);
+            }
+        });
 
-        jRadioButton7.setText("jRadioButton7");
-
-        jRadioButton8.setText("jRadioButton8");
-
-        jRadioButton9.setText("jRadioButton9");
-
-        jRadioButton10.setText("jRadioButton10");
+        input_numFormulario2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_numFormulario2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout aba_VisualizarLayout = new javax.swing.GroupLayout(aba_Visualizar);
         aba_Visualizar.setLayout(aba_VisualizarLayout);
         aba_VisualizarLayout.setHorizontalGroup(
             aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(aba_VisualizarLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
                 .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(text_opcao)
-                    .addComponent(jRadioButton9)
-                    .addComponent(jRadioButton8)
-                    .addComponent(jRadioButton7)
-                    .addComponent(jRadioButton6)
-                    .addComponent(jRadioButton5)
-                    .addComponent(jRadioButton3)
-                    .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jRadioButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
-                        .addComponent(jRadioButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jRadioButton10)
-                    .addComponent(jRadioButton4))
-                .addContainerGap(226, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, aba_VisualizarLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(button_pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(aba_VisualizarLayout.createSequentialGroup()
+                        .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(aba_VisualizarLayout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(text_opcao))
+                            .addGroup(aba_VisualizarLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(button_escolha1)
+                                    .addGroup(aba_VisualizarLayout.createSequentialGroup()
+                                        .addComponent(button_escolha2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(input_numFormulario1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(aba_VisualizarLayout.createSequentialGroup()
+                                        .addComponent(button_escolha3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(input_numFormulario2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(button_escolha4))))
+                        .addGap(0, 316, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         aba_VisualizarLayout.setVerticalGroup(
             aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(aba_VisualizarLayout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(text_opcao)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton2)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton3)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton4)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton5)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton6)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton7)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton8)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton9)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton10)
-                .addGap(48, 48, 48))
+                .addGap(76, 76, 76)
+                .addComponent(button_escolha1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(56, 56, 56)
+                .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_escolha2)
+                    .addComponent(input_numFormulario1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51)
+                .addGroup(aba_VisualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_escolha3)
+                    .addComponent(input_numFormulario2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(49, 49, 49)
+                .addComponent(button_escolha4)
+                .addGap(102, 102, 102)
+                .addComponent(button_pesquisar)
+                .addContainerGap())
         );
 
         tabbed_areaAluno.addTab("Visualizar", aba_Visualizar);
+
+        jLabel2.setText("Atualize as restrições:");
+
+        jLabel3.setText("Formulário:");
+
+        input_form.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_formActionPerformed(evt);
+            }
+        });
+
+        check_aluno.setText("Aluno");
+        check_aluno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                check_alunoActionPerformed(evt);
+            }
+        });
+
+        check_prof.setText("Professor");
+
+        check_tec.setText("Técnico");
+
+        check_terc.setText("Terceirizado");
+
+        jLabel4.setText("Escolha as restrições");
+
+        button_pesquisar2.setFont(new java.awt.Font("Waree", 1, 18)); // NOI18N
+        button_pesquisar2.setText("Confirmar");
+        button_pesquisar2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_pesquisar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_pesquisar2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout aba_AtualizarLayout = new javax.swing.GroupLayout(aba_Atualizar);
         aba_Atualizar.setLayout(aba_AtualizarLayout);
         aba_AtualizarLayout.setHorizontalGroup(
             aba_AtualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 812, Short.MAX_VALUE)
+            .addGroup(aba_AtualizarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(aba_AtualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(aba_AtualizarLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(input_form, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(aba_AtualizarLayout.createSequentialGroup()
+                        .addComponent(check_prof)
+                        .addGap(18, 18, 18)
+                        .addComponent(check_aluno)
+                        .addGap(18, 18, 18)
+                        .addComponent(check_tec)
+                        .addGap(18, 18, 18)
+                        .addComponent(check_terc))
+                    .addComponent(jLabel4))
+                .addContainerGap(393, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, aba_AtualizarLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(button_pesquisar2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         aba_AtualizarLayout.setVerticalGroup(
             aba_AtualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 502, Short.MAX_VALUE)
+            .addGroup(aba_AtualizarLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(jLabel2)
+                .addGap(29, 29, 29)
+                .addGroup(aba_AtualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(input_form, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addGroup(aba_AtualizarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(check_tec)
+                    .addComponent(check_terc)
+                    .addComponent(check_aluno)
+                    .addComponent(check_prof))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addComponent(button_pesquisar2)
+                .addContainerGap())
         );
 
         tabbed_areaAluno.addTab("Atualizar", aba_Atualizar);
+
+        text_opcao1.setText("Escolha uma opção abaixo para visualizar ");
+
+        button_group1.add(jRadioButton1);
+        jRadioButton1.setText("Remove Unidade Academica");
+        jRadioButton1.setName("botaoEx1"); // NOI18N
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        button_group1.add(jRadioButton2);
+        jRadioButton2.setText("Remove uma resposta");
+        jRadioButton2.setName("botaoEx2"); // NOI18N
+
+        input_unidadeAcad.setName(""); // NOI18N
+
+        button_pesquisar1.setFont(new java.awt.Font("Waree", 1, 18)); // NOI18N
+        button_pesquisar1.setText("Confirmar");
+        button_pesquisar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_pesquisar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_pesquisar1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout aba_ExcluirLayout = new javax.swing.GroupLayout(aba_Excluir);
         aba_Excluir.setLayout(aba_ExcluirLayout);
         aba_ExcluirLayout.setHorizontalGroup(
             aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 812, Short.MAX_VALUE)
+            .addGroup(aba_ExcluirLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, aba_ExcluirLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(button_pesquisar1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(aba_ExcluirLayout.createSequentialGroup()
+                        .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(text_opcao1)
+                            .addGroup(aba_ExcluirLayout.createSequentialGroup()
+                                .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(input_unidadeAcad)
+                                    .addComponent(input_respID, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))))
+                        .addGap(0, 443, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         aba_ExcluirLayout.setVerticalGroup(
             aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 502, Short.MAX_VALUE)
+            .addGroup(aba_ExcluirLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(text_opcao1)
+                .addGap(18, 18, 18)
+                .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton1)
+                    .addComponent(input_unidadeAcad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(aba_ExcluirLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButton2)
+                    .addComponent(input_respID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 333, Short.MAX_VALUE)
+                .addComponent(button_pesquisar1)
+                .addContainerGap())
         );
 
         tabbed_areaAluno.addTab("Excluir", aba_Excluir);
 
         getContentPane().add(tabbed_areaAluno);
         tabbed_areaAluno.setBounds(280, 60, 820, 540);
+
+        button_pronto.setFont(new java.awt.Font("Waree", 1, 15)); // NOI18N
+        button_pronto.setText("Pronto");
+        button_pronto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_pronto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_prontoActionPerformed(evt);
+            }
+        });
+
+        tArea_resposta.setColumns(20);
+        tArea_resposta.setRows(5);
+        jScrollPane1.setViewportView(tArea_resposta);
+
+        javax.swing.GroupLayout pannel_respostaLayout = new javax.swing.GroupLayout(pannel_resposta);
+        pannel_resposta.setLayout(pannel_respostaLayout);
+        pannel_respostaLayout.setHorizontalGroup(
+            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(button_pronto, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+        );
+        pannel_respostaLayout.setVerticalGroup(
+            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(button_pronto)
+                .addContainerGap())
+        );
+
+        getContentPane().add(pannel_resposta);
+        pannel_resposta.setBounds(280, 40, 820, 570);
 
         jLabel1.setForeground(new java.awt.Color(132, 132, 132));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/12107952-1.jpg"))); // NOI18N
@@ -259,9 +489,227 @@ public class areaAluno extends javax.swing.JFrame {
         System.exit(1);
     }//GEN-LAST:event_button_sairActionPerformed
 
+    private void button_escolha1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_escolha1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_escolha1ActionPerformed
+
+    private void button_pesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_pesquisarActionPerformed
+        // TODO add your handling code here:
+        String escolha = "";
+        
+        for (Enumeration<AbstractButton> buttons = button_group.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                escolha = button.getName();
+                break;
+            }
+        }
+
+        System.out.println(escolha);
+        switch (escolha) {
+            case "botao1":
+                setResult1();
+                break;
+            case "botao2":
+                setResult2();
+                break;
+            case "botao3":
+                setResult3();
+                break;
+            case "botao4":
+                setResult4();
+                break;
+        }
+    }//GEN-LAST:event_button_pesquisarActionPerformed
+
+    private void setResult1(){
+        try {
+            button_pesquisar.setVisible(false);
+            pannel_resposta.setVisible(true);
+            resultado = f.getFormularioNumQuestao();
+            
+            
+            tArea_resposta.append("\t\t\t            --------------FORMULÁRIOS--------------");
+            
+            while(resultado.next()) {
+                tArea_resposta.append("\n\n\nID: " + resultado.getString("id") +
+                        "\nNOME: " + resultado.getString("nome") +
+                        "\nDATA_INICIAL: " + resultado.getDate("data_inicial") +
+                        "\nDATA_FINAL: " + resultado.getDate("data_final") +
+                        "\nCRIADOR: " + resultado.getString("criador_cpf") +
+                        "\nNÚMERO DE QUESTÕES: " + resultado.getString("count"));
+            }
+            
+            f.fechaStatement();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(areaAluno.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void setResult2(){
+        int aux = -1;
+        
+        try {
+            button_pesquisar.setVisible(false);
+            pannel_resposta.setVisible(true);
+            System.out.println("RELOU");
+            resultado = f.getQuestoesFormulario(Integer.parseInt(input_numFormulario1.getText()));
+            
+            if(resultado != null){
+            
+                tArea_resposta.append("\t\t\t            --------------FORMULÁRIO--------------");
+
+                while(resultado.next()) {
+                    if(resultado.getInt("id") != aux){
+                        tArea_resposta.append("\n\nQUESTÃO: " + resultado.getInt("id") +
+                                "\nDESCRIÇÃO: " + resultado.getString("descricao") + "\n");
+                    }
+                    if(resultado.getString("opcao") != null) {
+                        tArea_resposta.append("\t" + resultado.getInt("pres_id") + 
+                            " - " + resultado.getString("opcao") + "\n");
+                    }
+                    aux = resultado.getInt("id");
+                }
+            }else 
+                tArea_resposta.append("Sem registros!");
+            f.fechaStatement();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(areaAluno.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    private void setResult3(){
+        try {
+            button_pesquisar.setVisible(false);
+            pannel_resposta.setVisible(true);
+            resultado = f.getResultadosQuestao(Integer.parseInt(input_numFormulario2.getText()));
+            
+            
+            tArea_resposta.append("\t\t                --------------PORCENTAGEM DAS RESPOSTAS--------------");
+            
+            if(resultado.next()){
+                tArea_resposta.append("\n\nQuestão: " + input_numFormulario2.getText());
+            
+                do {
+                    tArea_resposta.append("\n\nAlternativa: " + resultado.getInt("possivelres_id") + "     Porcentagem: " + resultado.getFloat("porcentagem")*100 + "%");
+                }while(resultado.next());
+            }else {
+                tArea_resposta.append("\n\nResposta não encontrada ou não é do tipo múltipla escolha");
+            }
+            f.fechaStatement();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(areaAluno.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void setResult4(){
+        try {
+            button_pesquisar.setVisible(false);
+            pannel_resposta.setVisible(true);
+            resultado = f.getQtaQuestoes(aluno.getCPF());
+            
+            
+            tArea_resposta.append("\t\t                --------------NÚMEROS DE QUESTÕES RESPONDIDAS--------------");
+            
+            if(resultado.next())
+                tArea_resposta.append("\n\n\nNÚMERO DE QUESTÕES: " + resultado.getInt("count"));
+            else
+                tArea_resposta.append("\n\n\nVocê ainda não respondeu nenhuma pergunta!");
+            f.fechaStatement();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(areaAluno.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
+    private void input_numFormulario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_numFormulario2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_numFormulario2ActionPerformed
+
+    private void button_escolha3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_escolha3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_escolha3ActionPerformed
+
+    private void input_numFormulario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_numFormulario1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_numFormulario1ActionPerformed
+
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
         // TODO add your handling code here:
+        
+        
     }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void button_pesquisar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_pesquisar1ActionPerformed
+        // TODO add your handling code here:
+        String escolha = "";
+        
+        for (Enumeration<AbstractButton> buttons = button_group1.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                escolha = button.getName();
+                break;
+            }
+        }
+
+        System.out.println(escolha);
+        switch (escolha) {
+            case "botaoEx1":
+                doExclude1();
+                break;
+            case "botaoEx2":
+                doExclude2();
+                break;
+        }
+        
+    }//GEN-LAST:event_button_pesquisar1ActionPerformed
+
+    private void button_prontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_prontoActionPerformed
+        // TODO add your handling code here:
+        pannel_resposta.setVisible(false);
+        tArea_resposta.setText("");
+
+        button_pesquisar.setVisible(true);
+    }//GEN-LAST:event_button_prontoActionPerformed
+
+    private void input_formActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_formActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_formActionPerformed
+
+    private void check_alunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_alunoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_check_alunoActionPerformed
+
+    private void button_pesquisar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_pesquisar2ActionPerformed
+        // TODO add your handling code here:
+        f.UpdateRestricao(Integer.parseInt(input_form.getText()), check_prof.isSelected(), check_aluno.isSelected(), check_tec.isSelected(), check_terc.isSelected());
+        JOptionPane.showMessageDialog(null, "Feito!");
+    }//GEN-LAST:event_button_pesquisar2ActionPerformed
+    
+    
+    private void doExclude1(){
+        if(uAcad.removeUnidAcad(input_unidadeAcad.getText())){
+            JOptionPane.showMessageDialog(null, "Feito!");
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro!");            
+        }
+    }
+    
+    private void doExclude2(){
+        if(f.deleteResposta(Integer.parseInt(input_respID.getText()))){
+            JOptionPane.showMessageDialog(null, "Feito!");
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro!");            
+        }
+    }
     
     private void setDisplayAluno(Aluno a) {
         text_setNome.setText(a.getNome());
@@ -310,27 +758,44 @@ public class areaAluno extends javax.swing.JFrame {
     private javax.swing.JPanel aba_Atualizar;
     private javax.swing.JPanel aba_Excluir;
     private javax.swing.JPanel aba_Visualizar;
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JRadioButton button_escolha1;
+    private javax.swing.JRadioButton button_escolha2;
+    private javax.swing.JRadioButton button_escolha3;
+    private javax.swing.JRadioButton button_escolha4;
+    private javax.swing.ButtonGroup button_group;
+    private javax.swing.ButtonGroup button_group1;
+    private javax.swing.JButton button_pesquisar;
+    private javax.swing.JButton button_pesquisar1;
+    private javax.swing.JButton button_pesquisar2;
+    private javax.swing.JButton button_pronto;
     private javax.swing.JButton button_sair;
+    private javax.swing.JCheckBox check_aluno;
+    private javax.swing.JCheckBox check_prof;
+    private javax.swing.JCheckBox check_tec;
+    private javax.swing.JCheckBox check_terc;
+    private javax.swing.JTextField input_form;
+    private javax.swing.JTextField input_numFormulario1;
+    private javax.swing.JTextField input_numFormulario2;
+    private javax.swing.JTextField input_respID;
+    private javax.swing.JTextField input_unidadeAcad;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton10;
     private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JRadioButton jRadioButton7;
-    private javax.swing.JRadioButton jRadioButton8;
-    private javax.swing.JRadioButton jRadioButton9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JPanel pannel_resposta;
+    private javax.swing.JTextArea tArea_resposta;
     private javax.swing.JTabbedPane tabbed_areaAluno;
     private javax.swing.JLabel text_bemVindo1;
     private javax.swing.JLabel text_curso;
     private javax.swing.JLabel text_email;
     private javax.swing.JLabel text_numMat;
     private javax.swing.JLabel text_opcao;
+    private javax.swing.JLabel text_opcao1;
     private javax.swing.JLabel text_setCurso;
     private javax.swing.JLabel text_setEmail;
     private javax.swing.JLabel text_setNome;

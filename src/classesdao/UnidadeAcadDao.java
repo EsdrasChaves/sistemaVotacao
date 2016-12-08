@@ -6,16 +6,13 @@
 package classesdao;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import sistemavotação.Aluno;
 
 /**
  *
  * @author esdraschaves
  */
-public interface AlunoDao {
-    public ArrayList<Aluno> getAllAlunos();
-    public int insertAluno (Aluno aluno);
-    public Aluno getAluno (String cpf);
-    public void deleteAluno (String cpf);
+public interface UnidadeAcadDao {
+    
+    public boolean removeUnidAcad(String sigla);
+    
 }

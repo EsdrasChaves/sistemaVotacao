@@ -25,7 +25,8 @@ public class AlunoDaoImpl implements AlunoDao{
     private Connection conexao;
     PreparedStatement st1;
     PreparedStatement st2;
-     
+
+    public AlunoDaoImpl() {}     
     
     @Override
     public ArrayList<Aluno> getAllAlunos() {
@@ -219,4 +220,5 @@ public class AlunoDaoImpl implements AlunoDao{
             }
         }
     }
+    
 }

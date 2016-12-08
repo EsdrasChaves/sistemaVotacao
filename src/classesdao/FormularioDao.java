@@ -15,6 +15,9 @@ public interface FormularioDao {
     
     public void fechaStatement();
     public ResultSet getFormularioNumQuestao();
-    public ResultSet getQuestoesFormulario(String id);
-    
+    public ResultSet getQuestoesFormulario(int id);
+    public ResultSet getResultadosQuestao(int id);
+    public ResultSet getQtaQuestoes(String cpf);
+    public boolean deleteResposta(int questao_id);
+    public void UpdateRestricao(int id,boolean pro,boolean alu,boolean tec,boolean ter);
 }
