@@ -196,6 +196,10 @@ ALTER TABLE formulario
     ADD CONSTRAINT pkformulario PRIMARY KEY (id);
 
 
+ALTER TABLE restricao
+    ADD CONSTRAINT pkrestricao PRIMARY KEY (formulario_id);
+
+
 ALTER TABLE questaosna
     ADD CONSTRAINT pkquestaosna PRIMARY KEY (id);
 
@@ -276,9 +280,6 @@ ALTER TABLE curso
 
 ALTER TABLE formulario
     ADD CONSTRAINT fkpessoa FOREIGN KEY (criador_cpf) REFERENCES pessoa(cpf);
-
-ALTER TABLE restricao
-    ADD CONSTRAINT pkrestricao PRIMARY KEY (formulario_id);
 
 ALTER TABLE restricao
     ADD CONSTRAINT fkformulario FOREIGN KEY (formulario_id) REFERENCES formulario(id);
@@ -622,10 +623,10 @@ INSERT INTO tecnicoacad (cpf, siape, uacad_sigla) VALUES ('42841177181', 'CCC000
 -- Inserção de Formulário --
 
 
-INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Esportes', CURRENT_DATE, '2016-11-29', '17755027244');
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Esportes', CURRENT_DATE, '2017-11-29', '17755027244');
 
 
-INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Reitoria', CURRENT_DATE, '2016-12-30', '31713966530');
+INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Reitoria', CURRENT_DATE, '2017-12-30', '31713966530');
 
 
 INSERT INTO formulario (id, nome, data_inicial, data_final, criador_cpf) VALUES (nextval('id_formulario'), 'Votação sobre Limpeza', '2016-12-30', '2017-01-27', '42841177181');
