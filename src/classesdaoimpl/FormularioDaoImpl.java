@@ -38,7 +38,7 @@ public class FormularioDaoImpl implements FormularioDao{
         ResultSet a;
         
         String query = "SELECT f.id, f.nome, f.data_inicial, f.data_final, f.criador_cpf, COUNT(f.id) FROM questoes q INNER JOIN " +
-"				(formulario f INNER JOIN restricao r ON aluno = TRUE AND r.formulario_id = f.id) ON f.id = q.formulario_id GROUP BY f.id;";
+"				(formulario f INNER JOIN restricao r ON aluno = TRUE AND r.formulario_id = f.id) ON f.id = q.formulario_id GROUP BY f.id order by f.id;";
         try{
             conexao = ConnectionDataBase.getConnection();
             st1 = conexao.prepareStatement(query);
@@ -144,7 +144,7 @@ public class FormularioDaoImpl implements FormularioDao{
              
              resposta.next();
              quantidade = resposta.getInt("quantidade");
-             query = "SELECT possivelres_id,count(*)/? AS porcentagem FROM respondeme GROUP BY possivelres_id,questao_id HAVING questao_id = ?;";
+             query = "SELECT possivelres_id,count(*)/? AS porcentagem FROM respondeme GROUP BY possivelres_id,questao_id HAVING questao_id = ? order by possivelres_id;";
              
              
              conexao = ConnectionDataBase.getConnection();

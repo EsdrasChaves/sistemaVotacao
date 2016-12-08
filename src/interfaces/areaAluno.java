@@ -75,6 +75,10 @@ public class areaAluno extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator1 = new javax.swing.JSeparator();
         button_sair = new javax.swing.JButton();
+        pannel_resposta = new javax.swing.JPanel();
+        button_pronto = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tArea_resposta = new javax.swing.JTextArea();
         tabbed_areaAluno = new javax.swing.JTabbedPane();
         aba_Visualizar = new javax.swing.JPanel();
         text_opcao = new javax.swing.JLabel();
@@ -102,10 +106,6 @@ public class areaAluno extends javax.swing.JFrame {
         input_unidadeAcad = new javax.swing.JTextField();
         input_respID = new javax.swing.JTextField();
         button_pesquisar1 = new javax.swing.JButton();
-        pannel_resposta = new javax.swing.JPanel();
-        button_pronto = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tArea_resposta = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -178,6 +178,41 @@ public class areaAluno extends javax.swing.JFrame {
         });
         getContentPane().add(button_sair);
         button_sair.setBounds(10, 590, 210, 35);
+
+        button_pronto.setFont(new java.awt.Font("Waree", 1, 15)); // NOI18N
+        button_pronto.setText("Pronto");
+        button_pronto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_pronto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_prontoActionPerformed(evt);
+            }
+        });
+
+        tArea_resposta.setColumns(20);
+        tArea_resposta.setRows(5);
+        jScrollPane1.setViewportView(tArea_resposta);
+
+        javax.swing.GroupLayout pannel_respostaLayout = new javax.swing.GroupLayout(pannel_resposta);
+        pannel_resposta.setLayout(pannel_respostaLayout);
+        pannel_respostaLayout.setHorizontalGroup(
+            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(button_pronto, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+        );
+        pannel_respostaLayout.setVerticalGroup(
+            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(button_pronto)
+                .addContainerGap())
+        );
+
+        getContentPane().add(pannel_resposta);
+        pannel_resposta.setBounds(280, 40, 820, 570);
 
         text_opcao.setText("Escolha uma opção abaixo para visualizar ");
 
@@ -439,41 +474,6 @@ public class areaAluno extends javax.swing.JFrame {
 
         getContentPane().add(tabbed_areaAluno);
         tabbed_areaAluno.setBounds(280, 60, 820, 540);
-
-        button_pronto.setFont(new java.awt.Font("Waree", 1, 15)); // NOI18N
-        button_pronto.setText("Pronto");
-        button_pronto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        button_pronto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_prontoActionPerformed(evt);
-            }
-        });
-
-        tArea_resposta.setColumns(20);
-        tArea_resposta.setRows(5);
-        jScrollPane1.setViewportView(tArea_resposta);
-
-        javax.swing.GroupLayout pannel_respostaLayout = new javax.swing.GroupLayout(pannel_resposta);
-        pannel_resposta.setLayout(pannel_respostaLayout);
-        pannel_respostaLayout.setHorizontalGroup(
-            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(button_pronto, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
-        );
-        pannel_respostaLayout.setVerticalGroup(
-            pannel_respostaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pannel_respostaLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(button_pronto)
-                .addContainerGap())
-        );
-
-        getContentPane().add(pannel_resposta);
-        pannel_resposta.setBounds(280, 40, 820, 570);
 
         jLabel1.setForeground(new java.awt.Color(132, 132, 132));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/12107952-1.jpg"))); // NOI18N
