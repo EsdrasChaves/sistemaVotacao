@@ -1,21 +1,21 @@
-# Sistema de Votação
-Trabalho da disciplina Sistemas de banco de dados.
+# Voting system
+Database Systems course assignment.
 
-Este trabalho consiste em implementar um banco de dados de um sistema de votação da universidade.
+This work consists of implementing a database of a university voting system.
 
-Passos do trabalho:
+Steps:
 
-- Criação de um Modelo Entidade-Relacionamento a partir de um texto com especifficações;
-- Criação do Modelo Relacional;
-- Realização/Verificação de Normalização;
-- Criação de algumas consultas, inserções, deletes e updates com algumas condições;
-- Criação da aplicação que sirva para realizar os testes do que foi feito no passo anterior, ou seja, a aplicação não se encontra completa, apenas implementa funções que utilizam as consultas do passo anterior;
+- Creation of an Entity-Relationship Model from a specification text;
+- Creation of the Relational Model;
+- Realization / Verification of Normalization;
+- Creation of some queries, insertions, deletes, and updates with some conditions;
+- Creation of the application to perform the tests of what was done in the previous step, ie the application is not complete, only implements functions that use the queries of the previous step;
 
-Material disponível:
+Available Material:
 
-- Especificação do trabalho;
-- Modelo Entidade-Relacionamento;
-- Modelo Relacional;
-- Documento analisando a Normalização;
-- Script de Implementação do Banco e Povoamento;
-- Projeto da aplicação do NetBeans (Java);
+- Specification of the work;
+- Entity-Relationship Model;
+- Relational Model;
+- Document analyzing Normalization;
+- Database Implementation Script and Settlement;
+- NetBeans application project (Java);
